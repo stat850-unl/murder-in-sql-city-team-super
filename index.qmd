@@ -2,7 +2,7 @@
 title: "Homework: Murder in SQL City"
 execute:
   error: true
-author: "Your Name"
+author: "Lucia, Joycelyn and Michael"
 output: html_document
 ---
 
@@ -68,6 +68,16 @@ table_names <- c("crime_scene_report",
 purrr::walk(table_names, function(x) {
   assign(x, dbReadTable(con, x), envir = .GlobalEnv)
 })
+
+#Filter crime_scene
+crime_scene_filter <- filter(crime_scene_report, type == "murder", date == "20180115", city == "SQL City")
+
+#Filter date check
+get_checkin <- filter(get_fit_now_check_in, check_in_date == "20180115")
+
+#Join get_check in and 
+join1 <- right_join (get_fit_now_member, get_checkin, by = c("id"= "membership_id"))
+join2<- left_join (join1,person, by ="id") #change text to integrer
 
 # close the connection when you're done
 dbDisconnect(con)
