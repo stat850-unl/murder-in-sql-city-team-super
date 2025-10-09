@@ -77,7 +77,47 @@ get_checkin <- filter(get_fit_now_check_in, check_in_date == "20180115")
 
 #Join get_check in and 
 join1 <- right_join (get_fit_now_member, get_checkin, by = c("id"= "membership_id"))
-join2<- left_join (join1,person, by ="id") #change text to integrer
+
+Witness1 <- filter(person, address_street_name == "Northwestern Dr") %>%
+  arrange(desc(address_number)) %>%
+  slice(1)
+
+Witness2 <- person %>%
+  filter(address_street_name == "Franklin Ave") %>%
+  filter(str_detect(name , "Annabel"))
+#Combine both witness
+witness_ids <- c(Witness1$id, Witness2$id)
+
+#See interviews
+interview1<- filter(interview, person_id == "14887")
+interview2<- filter(interview, person_id == "16371")
+interviews <- c(interview1$transcript, interview2$transcript)
+
+#See membership
+get_fit_checkin_filter <- get_fit_now_check_in %>%
+  filter(str_detect(membership_id, "^48Z")) %>%
+  filter(check_in_date == "20180109")
+#See who is gold
+seegold <- left_join(get_fit_checkin_filter, get_fit_now_member, by = c("membership_id"= "id"))
+ids <- left_join(seegold, person, by = c("person_id" = "id"))
+plate <- left_join(ids , drivers_license, by =c ("license_id" = "id"))
+#Now we see Jeremy Bowers interview
+
+Jeremyinterv <- filter (interview, person_id =="67318")
+
+#Look for the woman
+Womanfilter <- facebook_event_checkin %>%
+  filter(event_name == "SQL Symphony Concert") %>%
+  filter(str_detect(date, "^201712"))
+
+#person_id =24556 or 99716
+
+join3<- left_join(person, drivers_license, by =c ("license_id" = "id"))
+id1check <-filter(join3, id =="24556")
+idchack2<- filter(join3, id =="99716")
+
+#The woman is Miranda Priestly
+
 
 # close the connection when you're done
 dbDisconnect(con)
