@@ -85,6 +85,7 @@ Witness1 <- filter(person, address_street_name == "Northwestern Dr") %>%
 Witness2 <- person %>%
   filter(address_street_name == "Franklin Ave") %>%
   filter(str_detect(name , "Annabel"))
+
 #Combine both witness
 witness_ids <- c(Witness1$id, Witness2$id)
 
@@ -97,32 +98,32 @@ interviews <- c(interview1$transcript, interview2$transcript)
 get_fit_checkin_filter <- get_fit_now_check_in %>%
   filter(str_detect(membership_id, "^48Z")) %>%
   filter(check_in_date == "20180109")
+
 #See who is gold
 seegold <- left_join(get_fit_checkin_filter, get_fit_now_member, by = c("membership_id"= "id"))
 ids <- left_join(seegold, person, by = c("person_id" = "id"))
 plate <- left_join(ids , drivers_license, by =c ("license_id" = "id"))
-#Now we see Jeremy Bowers interview
 
+#Now we see Jeremy Bowers interview
 Jeremyinterv <- filter (interview, person_id =="67318")
 
 #Look for the woman
 Womanfilter <- facebook_event_checkin %>%
   filter(event_name == "SQL Symphony Concert") %>%
   filter(str_detect(date, "^201712"))
-#Try to look for a code which appear 3 times 
 
+#Try to look for a code which appear 3 times 
 codes_3times <- Womanfilter %>%
   group_by(person_id) %>%            
   summarise(n = n()) %>%
   filter(n == 3)
 
 #person_id =24556 or 99716
-
 join3<- left_join(person, drivers_license, by =c ("license_id" = "id"))
 id1check <-filter(join3, id =="24556")
 idchack2<- filter(join3, id =="99716")
 
-#The woman is Miranda Priestly
+#The woman is Miranda Priestly and the killer was Jeremy Bowers
 
 
 # close the connection when you're done
